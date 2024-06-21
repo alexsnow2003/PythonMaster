@@ -7,9 +7,9 @@ def create_connection():
         connection = mysql.connector.connect(
             host='localhost',
             port=3307,
-            database='QLKS',  # Make sure this matches your actual database name
-            user='root',      # Adjust username as necessary
-            password='123456'  # Adjust password as necessary
+            database='QLKS',
+            user='root',  # Thay đổi nếu cần
+            password='123456'  # Thay đổi nếu cần
         )
         return connection
     except Error as e:
@@ -22,14 +22,12 @@ def close_connection(connection):
         connection.close()
 
 def fetch_all_customers():
-    """ Retrieve all customers from the database. """
     connection = create_connection()
     if connection:
         try:
             cursor = connection.cursor(dictionary=True)
             cursor.execute("SELECT * FROM KhachHang")
             customers = cursor.fetchall()
-            print("Fetched customers:", customers)  # Add debug print
             return customers
         except Error as e:
             print(f"Error fetching customers: {e}")
@@ -54,14 +52,14 @@ def fetch_customer_by_id(customer_id):
             close_connection(connection)
     return None
 
-def add_customer(name, email, phone, address):
+def add_customer(name, birthdate, gender, nationality, cccd, phone, email):
     """ Add a new customer to the database. """
     connection = create_connection()
     if connection:
         try:
             cursor = connection.cursor()
-            cursor.execute("INSERT INTO KhachHang (TenKH, Email, SDT, DiaChi) VALUES (%s, %s, %s, %s)",
-                           (name, email, phone, address))
+            cursor.execute("INSERT INTO KhachHang (TenKH, NgaySinh, GioiTinh, QuocTich, CCCD, SDT, Email) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                           (name, birthdate, gender, nationality, cccd, phone, email))
             connection.commit()
             return cursor.lastrowid  # Return the ID of the newly inserted customer
         except Error as e:
@@ -71,14 +69,14 @@ def add_customer(name, email, phone, address):
             close_connection(connection)
     return None
 
-def update_customer(customer_id, name, email, phone, address):
+def update_customer(customer_id, name, birthdate, gender, nationality, cccd, phone, email):
     """ Update an existing customer in the database. """
     connection = create_connection()
     if connection:
         try:
             cursor = connection.cursor()
-            cursor.execute("UPDATE KhachHang SET TenKH = %s, Email = %s, SDT = %s, DiaChi = %s WHERE MaKH = %s",
-                           (name, email, phone, address, customer_id))
+            cursor.execute("UPDATE KhachHang SET TenKH = %s, NgaySinh = %s, GioiTinh = %s, QuocTich = %s, CCCD = %s, SDT = %s, Email = %s WHERE MaKH = %s",
+                           (name, birthdate, gender, nationality, cccd, phone, email, customer_id))
             connection.commit()
             return True
         except Error as e:
@@ -120,9 +118,3 @@ def search_customers(keyword):
             cursor.close()
             close_connection(connection)
     return []
-
-# Test the functions if needed
-if __name__ == "__main__":
-    print(fetch_all_customers())
-    print(fetch_customer_by_id(1))
-    # Add more test cases as needed
