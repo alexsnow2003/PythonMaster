@@ -6,10 +6,10 @@ def create_connection():
     try:
         connection = mysql.connector.connect(
             host='localhost',
-            port=3307,
+            port=3306,
             database='QLKS',  # Make sure this matches your actual database name
             user='root',      # Adjust username as necessary
-            password='123456'  # Adjust password as necessary
+            password='phuc123'  # Adjust password as necessary
         )
         return connection
     except Error as e:
