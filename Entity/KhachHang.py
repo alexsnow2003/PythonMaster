@@ -1,26 +1,6 @@
 import mysql.connector
 from mysql.connector import Error
-
-
-def create_connection():
-    """ Create a connection to MySQL database. """
-    try:
-        connection = mysql.connector.connect(
-            host='localhost',
-            port=3307,
-            database='QLKS',
-            user='root',  # Thay đổi nếu cần
-            password='123456'  # Thay đổi nếu cần
-        )
-        return connection
-    except Error as e:
-        print(f"Error connecting to MySQL database: {e}")
-        return None
-
-def close_connection(connection):
-    """ Close MySQL database connection. """
-    if connection:
-        connection.close()
+from .Database import create_connection, close_connection
 
 def fetch_all_customers():
     connection = create_connection()
@@ -38,7 +18,6 @@ def fetch_all_customers():
     return []
 
 def fetch_customer_by_id(customer_id):
-    """ Retrieve a customer by ID from the database. """
     connection = create_connection()
     if connection:
         try:
@@ -54,7 +33,6 @@ def fetch_customer_by_id(customer_id):
     return None
 
 def add_customer(name, birthdate, gender, nationality, cccd, phone, email):
-    """ Add a new customer to the database. """
     connection = create_connection()
     if connection:
         try:
@@ -62,7 +40,7 @@ def add_customer(name, birthdate, gender, nationality, cccd, phone, email):
             cursor.execute("INSERT INTO KhachHang (TenKH, NgaySinh, GioiTinh, QuocTich, CCCD, SDT, Email) VALUES (%s, %s, %s, %s, %s, %s, %s)",
                            (name, birthdate, gender, nationality, cccd, phone, email))
             connection.commit()
-            return cursor.lastrowid  # Return the ID of the newly inserted customer
+            return cursor.lastrowid
         except Error as e:
             print(f"Error adding customer: {e}")
         finally:
@@ -71,7 +49,6 @@ def add_customer(name, birthdate, gender, nationality, cccd, phone, email):
     return None
 
 def update_customer(customer_id, name, birthdate, gender, nationality, cccd, phone, email):
-    """ Update an existing customer in the database. """
     connection = create_connection()
     if connection:
         try:
@@ -88,7 +65,6 @@ def update_customer(customer_id, name, birthdate, gender, nationality, cccd, pho
     return False
 
 def delete_customer(customer_id):
-    """ Delete a customer from the database. """
     connection = create_connection()
     if connection:
         try:
@@ -104,7 +80,6 @@ def delete_customer(customer_id):
     return False
 
 def search_customers(keyword):
-    """ Search for customers in the database by name or email. """
     connection = create_connection()
     if connection:
         try:

@@ -61,6 +61,8 @@ class LoginRegistrationForm(QMainWindow):
             }
         """)
 
+        self.main_window = None  # Add this line
+
     def login(self):
         username = self.username_input.text()
         password = self.password_input.text()
@@ -75,7 +77,7 @@ class LoginRegistrationForm(QMainWindow):
                     if result:
                         role = result[3]  # Assuming 'role' is the fourth column (index 3) in your table
                         self.open_main_window(role)
-                        self.close()  # Close the login form after successful login
+                        self.hide()  # Hide the login form after successful login
                     else:
                         QMessageBox.warning(self, "Error", "Invalid username or password")
                 except Error as e:
@@ -88,6 +90,7 @@ class LoginRegistrationForm(QMainWindow):
 
     def open_main_window(self, role):
         self.main_window = MainWindow(role)
+        self.main_window.logout_signal.connect(self.show_login_form)
         self.main_window.show()
 
     def open_registration_form(self):
@@ -95,6 +98,10 @@ class LoginRegistrationForm(QMainWindow):
         if not self.registration_form:
             self.registration_form = RegistrationForm(parent=self)
         self.registration_form.show()
+
+    def show_login_form(self):
+        self.main_window.close()
+        self.show()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

@@ -1,4 +1,5 @@
 import sys
+
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, \
     QPushButton, QMessageBox, QTableWidget, QTableWidgetItem, QHeaderView, QDialog, QFormLayout, QDateEdit
 from PyQt6.QtCore import Qt, QDate
@@ -72,40 +73,59 @@ class CustomerManagementWindow(QMainWindow):
     def add_customer_dialog(self):
         dialog = QDialog(self)
         dialog.setWindowTitle("Thêm Khách Hàng")
-        layout = QFormLayout()
+        dialog.setStyleSheet("""
+            background-color: #f0f0f0;
+            font-size: 14px;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+        """)
+
+        layout = QVBoxLayout(dialog)
+
+        form_layout = QFormLayout()
 
         self.name_input = QLineEdit()
-        layout.addRow("Tên KH:", self.name_input)
+        self.apply_style(self.name_input)
+        form_layout.addRow("Tên KH:", self.name_input)
 
-        self.birthdate_input = QDateEdit()
-        self.birthdate_input.setDisplayFormat("yyyy-MM-dd")
-        layout.addRow("Ngày Sinh:", self.birthdate_input)
+        self.birthdate_input = QLineEdit()
+        self.birthdate_input.setPlaceholderText("DD/MM/YYYY or DD-MM-YYYY")
+        self.apply_style(self.birthdate_input)
+        form_layout.addRow("Ngày Sinh:", self.birthdate_input)
 
         self.gender_input = QLineEdit()
-        layout.addRow("Giới Tính:", self.gender_input)
+        self.apply_style(self.gender_input)
+        form_layout.addRow("Giới Tính:", self.gender_input)
 
         self.nationality_input = QLineEdit()
-        layout.addRow("Quốc Tịch:", self.nationality_input)
+        self.apply_style(self.nationality_input)
+        form_layout.addRow("Quốc Tịch:", self.nationality_input)
 
         self.cccd_input = QLineEdit()
-        layout.addRow("CCCD:", self.cccd_input)
+        self.apply_style(self.cccd_input)
+        form_layout.addRow("CCCD:", self.cccd_input)
 
         self.phone_input = QLineEdit()
-        layout.addRow("SĐT:", self.phone_input)
+        self.apply_style(self.phone_input)
+        form_layout.addRow("SĐT:", self.phone_input)
 
         self.email_input = QLineEdit()
-        layout.addRow("Email:", self.email_input)
+        self.apply_style(self.email_input)
+        form_layout.addRow("Email:", self.email_input)
 
         save_button = QPushButton("Lưu")
         save_button.clicked.connect(lambda: self.save_customer(dialog))
-        layout.addRow(save_button)
+        self.apply_style(save_button)
+        form_layout.addRow(save_button)
 
-        dialog.setLayout(layout)
+        layout.addLayout(form_layout)
+
         dialog.exec()
 
     def save_customer(self, dialog):
         name = self.name_input.text()
-        birthdate = self.birthdate_input.date().toString(Qt.DateFormat.ISODate)
+        birthdate = self.birthdate_input.text()  # Getting text directly
         gender = self.gender_input.text()
         nationality = self.nationality_input.text()
         cccd = self.cccd_input.text()
@@ -123,58 +143,79 @@ class CustomerManagementWindow(QMainWindow):
         else:
             QMessageBox.warning(self, "Lỗi", "Vui lòng điền đầy đủ thông tin.")
 
-    def edit_customer_dialog(self, row=None):
-        if row is None:  # Triggered from button click
-            selected_rows = self.table.selectionModel().selectedRows()
-            if selected_rows:
-                row = selected_rows[0].row()
-            else:
-                QMessageBox.warning(self, "Lỗi", "Vui lòng chọn khách hàng để chỉnh sửa.")
-                return
+    def edit_customer_dialog(self):
+        selected_rows = self.table.selectionModel().selectedRows()
+        if not selected_rows:
+            QMessageBox.warning(self, "Lỗi", "Vui lòng chọn khách hàng để chỉnh sửa.")
+            return
 
-        customer_id = int(self.table.item(row, 0).text())
+        row = selected_rows[0].row()
+        customer_id_item = self.table.item(row, 0)
+        if customer_id_item is None:
+            QMessageBox.warning(self, "Lỗi", "Không tìm thấy thông tin khách hàng.")
+            return
+
+        customer_id = int(customer_id_item.text())
         customer = fetch_customer_by_id(customer_id)
-        if customer:
-            dialog = QDialog(self)
-            dialog.setWindowTitle("Sửa Khách Hàng")
-            layout = QFormLayout()
-
-            self.name_input_edit = QLineEdit(customer['TenKH'])
-            layout.addRow("Tên KH:", self.name_input_edit)
-
-            self.birthdate_input_edit = QDateEdit()
-            self.birthdate_input_edit.setDate(
-                QDate.fromString(customer['NgaySinh'], Qt.DateFormat.ISODate) if customer['NgaySinh'] else QDate())
-            self.birthdate_input_edit.setDisplayFormat("yyyy-MM-dd")
-            layout.addRow("Ngày Sinh:", self.birthdate_input_edit)
-
-            self.gender_input_edit = QLineEdit(customer['GioiTinh'])
-            layout.addRow("Giới Tính:", self.gender_input_edit)
-
-            self.nationality_input_edit = QLineEdit(customer['QuocTich'])
-            layout.addRow("Quốc Tịch:", self.nationality_input_edit)
-
-            self.cccd_input_edit = QLineEdit(customer['CCCD'])
-            layout.addRow("CCCD:", self.cccd_input_edit)
-
-            self.phone_input_edit = QLineEdit(customer['SDT'])
-            layout.addRow("SĐT:", self.phone_input_edit)
-
-            self.email_input_edit = QLineEdit(customer['Email'])
-            layout.addRow("Email:", self.email_input_edit)
-
-            save_button = QPushButton("Lưu")
-            save_button.clicked.connect(lambda: self.save_customer_edit(customer_id, dialog))
-            layout.addRow(save_button)
-
-            dialog.setLayout(layout)
-            dialog.exec()
-        else:
+        if not customer:
             QMessageBox.warning(self, "Lỗi", "Không thể tải thông tin khách hàng.")
+            return
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Sửa Khách Hàng")
+        dialog.setStyleSheet("""
+            background-color: #f0f0f0;
+            font-size: 14px;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+        """)
+
+        layout = QVBoxLayout(dialog)
+
+        form_layout = QFormLayout()
+
+        self.name_input_edit = QLineEdit(customer.get('TenKH', ''))
+        self.apply_style(self.name_input_edit)
+        form_layout.addRow("Tên KH:", self.name_input_edit)
+
+        self.birthdate_input_edit = QLineEdit(customer.get('NgaySinh', ''))
+        self.birthdate_input_edit.setPlaceholderText("DD/MM/YYYY or DD-MM-YYYY")
+        self.apply_style(self.birthdate_input_edit)
+        form_layout.addRow("Ngày Sinh:", self.birthdate_input_edit)
+
+        self.gender_input_edit = QLineEdit(customer.get('GioiTinh', ''))
+        self.apply_style(self.gender_input_edit)
+        form_layout.addRow("Giới Tính:", self.gender_input_edit)
+
+        self.nationality_input_edit = QLineEdit(customer.get('QuocTich', ''))
+        self.apply_style(self.nationality_input_edit)
+        form_layout.addRow("Quốc Tịch:", self.nationality_input_edit)
+
+        self.cccd_input_edit = QLineEdit(customer.get('CCCD', ''))
+        self.apply_style(self.cccd_input_edit)
+        form_layout.addRow("CCCD:", self.cccd_input_edit)
+
+        self.phone_input_edit = QLineEdit(customer.get('SDT', ''))
+        self.apply_style(self.phone_input_edit)
+        form_layout.addRow("SĐT:", self.phone_input_edit)
+
+        self.email_input_edit = QLineEdit(customer.get('Email', ''))
+        self.apply_style(self.email_input_edit)
+        form_layout.addRow("Email:", self.email_input_edit)
+
+        save_button = QPushButton("Lưu")
+        save_button.clicked.connect(lambda: self.save_customer_edit(customer_id, dialog))
+        self.apply_style(save_button)
+        form_layout.addRow(save_button)
+
+        layout.addLayout(form_layout)
+
+        dialog.exec()
 
     def save_customer_edit(self, customer_id, dialog):
         name = self.name_input_edit.text()
-        birthdate = self.birthdate_input_edit.date().toString(Qt.DateFormat.ISODate)
+        birthdate = self.birthdate_input_edit.text()  # Getting text directly
         gender = self.gender_input_edit.text()
         nationality = self.nationality_input_edit.text()
         cccd = self.cccd_input_edit.text()
@@ -199,13 +240,18 @@ class CustomerManagementWindow(QMainWindow):
             if confirm == QMessageBox.StandardButton.Yes:
                 row = selected_rows[0].row()
                 customer_id = int(self.table.item(row, 0).text())
-                if delete_customer(customer_id):
+                success = self.soft_delete_customer(customer_id)
+                if success:
                     QMessageBox.information(self, "Thành công", "Xóa khách hàng thành công.")
                     self.load_customers()
                 else:
                     QMessageBox.critical(self, "Lỗi", "Xóa khách hàng thất bại.")
         else:
             QMessageBox.warning(self, "Lỗi", "Vui lòng chọn khách hàng để xóa.")
+
+    def soft_delete_customer(self, customer_id):
+        success = delete_customer(customer_id)
+        return success
 
     def search_customers(self, keyword):
         if keyword:
@@ -224,6 +270,14 @@ class CustomerManagementWindow(QMainWindow):
                 self.table.setItem(row, 7, QTableWidgetItem(customer['Email']))
         else:
             self.load_customers()
+
+    def apply_style(self, widget):
+        widget.setStyleSheet("""
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        """)
 
 
 if __name__ == "__main__":

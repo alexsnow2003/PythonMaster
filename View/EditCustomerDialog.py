@@ -109,7 +109,7 @@ class CustomerManagementWindow(QMainWindow):
         buttons_layout.addWidget(self.add_button)
 
         self.edit_button = QPushButton("Sửa KH")
-        self.edit_button.clicked.connect(lambda: self.edit_customer_dialog())  # Ensure proper call
+        self.edit_button.clicked.connect(self.edit_customer_button_clicked)  # Connect to button clicked
         buttons_layout.addWidget(self.edit_button)
 
         self.delete_button = QPushButton("Xóa KH")
@@ -146,15 +146,15 @@ class CustomerManagementWindow(QMainWindow):
         if dialog.exec():
             self.load_customers()
 
-    def edit_customer_dialog(self, row=None):
-        if row is None:  # Triggered from button click
-            selected_rows = self.table.selectionModel().selectedRows()
-            if selected_rows:
-                row = selected_rows[0].row()
-            else:
-                QMessageBox.warning(self, "Lỗi", "Vui lòng chọn khách hàng để chỉnh sửa.")
-                return
+    def edit_customer_button_clicked(self):
+        selected_rows = self.table.selectionModel().selectedRows()
+        if selected_rows:
+            row = selected_rows[0].row()
+            self.edit_customer_dialog(row)
+        else:
+            QMessageBox.warning(self, "Lỗi", "Vui lòng chọn khách hàng để chỉnh sửa.")
 
+    def edit_customer_dialog(self, row):
         customer_id = int(self.table.item(row, 0).text())
         customer = fetch_customer_by_id(customer_id)
         if customer:
