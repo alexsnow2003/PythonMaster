@@ -2,7 +2,7 @@ import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel, QPushButton, QMessageBox
 from PyQt6.QtCore import Qt
 from customer_management import CustomerManagementWindow  # Import CustomerManagementWindow
-
+from View.rom_management import RoomManagementWindow
 
 class MainWindow(QMainWindow):
     def __init__(self, role):
@@ -61,7 +61,9 @@ class MainWindow(QMainWindow):
         """)
 
     def manage_rooms(self):
-        QMessageBox.information(self, "Manage Rooms", "Manage Rooms button clicked.")
+
+        self.room_management_window = RoomManagementWindow()
+        self.room_management_window.show()
 
     def manage_customers(self):
         self.customer_management_window = CustomerManagementWindow()  # Create an instance of CustomerManagementWindow

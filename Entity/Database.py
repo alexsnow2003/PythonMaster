@@ -121,6 +121,101 @@ def search_customers(keyword):
             close_connection(connection)
     return []
 
+def create_connection():
+    """ Create a connection to MySQL database. """
+    try:
+        connection = mysql.connector.connect(
+            host='localhost',
+            port=3306,
+            database='QLKS',
+            user='root',  # Thay đổi nếu cần
+            password='phuc123'  # Thay đổi nếu cần
+        )
+        return connection
+    except Error as e:
+        print(f"Error connecting to MySQL database: {e}")
+        return None
+
+def close_connection(connection):
+    """ Close MySQL database connection. """
+    if connection:
+        connection.close()
+
+# Room functions
+def fetch_all_rooms():
+    connection = create_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute("SELECT * FROM Phong")
+            rooms = cursor.fetchall()
+            return rooms
+        except Error as e:
+            print(f"Error fetching rooms: {e}")
+        finally:
+            cursor.close()
+            close_connection(connection)
+    return []
+
+def search_room_by_id(room_id):
+    connection = create_connection()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute("SELECT * FROM Phong WHERE MaPhong = %s", (room_id,))
+            room = cursor.fetchone()
+            return room
+        except Error as e:
+            print(f"Error fetching room: {e}")
+        finally:
+            cursor.close()
+            close_connection(connection)
+    return None
+
+def book_room(room_id):
+    connection = create_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            cursor.execute("UPDATE Phong SET TinhTrang = 'Booked' WHERE MaPhong = %s AND TinhTrang = 'Available'", (room_id,))
+            connection.commit()
+            return cursor.rowcount > 0  # Return True if a row was updated
+        except Error as e:
+            print(f"Error booking room: {e}")
+        finally:
+            cursor.close()
+            close_connection(connection)
+    return False
+
+def cancel_room(room_id):
+    connection = create_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            cursor.execute("UPDATE Phong SET TinhTrang = 'Available' WHERE MaPhong = %s AND TinhTrang = 'Booked'", (room_id,))
+            connection.commit()
+            return cursor.rowcount > 0  # Return True if a row was updated
+        except Error as e:
+            print(f"Error canceling room: {e}")
+        finally:
+            cursor.close()
+            close_connection(connection)
+    return False
+
+def update_room_info(room_id, room_name, status):
+    connection = create_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            cursor.execute("UPDATE Phong SET TenPhong = %s, TinhTrang = %s WHERE MaPhong = %s", (room_name, status, room_id))
+            connection.commit()
+            return True
+        except Error as e:
+            print(f"Error updating room info: {e}")
+        finally:
+            cursor.close()
+            close_connection(connection)
+    return False
 # Test the functions if needed
 if __name__ == "__main__":
     print(fetch_all_customers())
