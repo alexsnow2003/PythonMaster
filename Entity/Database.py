@@ -121,25 +121,6 @@ def search_customers(keyword):
             close_connection(connection)
     return []
 
-def create_connection():
-    """ Create a connection to MySQL database. """
-    try:
-        connection = mysql.connector.connect(
-            host='localhost',
-            port=3306,
-            database='QLKS',
-            user='root',  # Thay đổi nếu cần
-            password='phuc123'  # Thay đổi nếu cần
-        )
-        return connection
-    except Error as e:
-        print(f"Error connecting to MySQL database: {e}")
-        return None
-
-def close_connection(connection):
-    """ Close MySQL database connection. """
-    if connection:
-        connection.close()
 
 # Room functions
 def fetch_all_rooms():
