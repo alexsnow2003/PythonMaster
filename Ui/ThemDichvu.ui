@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(170, 255, 255);</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTextEdit" name="textEdit">
     <property name="geometry">
@@ -24,7 +27,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(0, 170, 255);</string>
+     <string notr="true">background-color: rgb(85, 255, 0);</string>
     </property>
     <property name="placeholderText">
      <string>Nhập ID</string>
@@ -81,7 +84,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(0, 170, 255);</string>
+     <string notr="true">background-color: rgb(85, 255, 0);</string>
     </property>
     <property name="placeholderText">
      <string>Nhập ......</string>
@@ -136,7 +139,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(0, 170, 255);</string>
+     <string notr="true">background-color: rgb(85, 255, 0);</string>
     </property>
     <property name="placeholderText">
      <string>VND</string>
