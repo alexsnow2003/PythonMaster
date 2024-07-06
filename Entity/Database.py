@@ -1,5 +1,5 @@
 import mysql.connector
-from mysql.connector import Error
+from mysql.connector import Error, connect
 
 
 def create_connection():
@@ -119,3 +119,39 @@ def search_customers(keyword):
             cursor.close()
             close_connection(connection)
     return []
+# Thực thi truy vấn SELECT và trả về tất cả kết quả dưới dạng list of dictionaries
+def execute_query(query, params=None):
+    connection = connect()
+    if connection:
+        try:
+            cursor = connection.cursor(dictionary=True)
+            if params:
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+            result = cursor.fetchall()
+            cursor.close()
+            connection.close()
+            return result
+        except Error as e:
+            print(f"Error executing query: {e}")
+    return None
+
+# Thực thi truy vấn INSERT, UPDATE hoặc DELETE và trả về số dòng ảnh hưởng
+def execute_update(query, params=None):
+    connection = connect()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            if params:
+                cursor.execute(query, params)
+            else:
+                cursor.execute(query)
+            connection.commit()
+            affected_rows = cursor.rowcount
+            cursor.close()
+            connection.close()
+            return affected_rows
+        except Error as e:
+            print(f"Error executing update: {e}")
+    return 0
