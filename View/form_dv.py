@@ -167,11 +167,13 @@ class Ui_MainWindow(object):
         self.ui.setupUi(self.window)
         self.window.show()
 
+
     def open_edit_form(self):
         self.window = QtWidgets.QMainWindow()
         self.ui = EditUi_MainWindow()
         self.ui.setupUi(self.window)
         self.window.show()
+
 
     def close_application(self):
         QtCore.QCoreApplication.instance().quit()

@@ -14,10 +14,10 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(170, 255, 255);</string>
+   <string notr="true">background-color: rgb(199, 200, 133);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTextEdit" name="txtaddID">
+   <widget class="QTextEdit" name="txtID">
     <property name="geometry">
      <rect>
       <x>190</x>
@@ -27,7 +27,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(85, 255, 0);</string>
+     <string notr="true">background-color: rgb(206, 255, 255);</string>
     </property>
     <property name="placeholderText">
      <string>Nhập ID</string>
@@ -49,7 +49,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Thêm Dịch Vụ</string>
+     <string>Sửa Dịch Vụ</string>
     </property>
    </widget>
    <widget class="QPushButton" name="btCapNhat">
@@ -73,7 +73,7 @@
      <string>Cập Nhật</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="txtaddMoTa">
+   <widget class="QTextEdit" name="txtMoTa">
     <property name="geometry">
      <rect>
       <x>190</x>
@@ -83,7 +83,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(85, 255, 0);</string>
+     <string notr="true">background-color: rgb(206, 255, 255);</string>
     </property>
     <property name="placeholderText">
      <string>Nhập ......</string>
@@ -128,7 +128,7 @@
      <string>ID Dịch Vụ :</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="txtaddGia">
+   <widget class="QTextEdit" name="txtGia">
     <property name="geometry">
      <rect>
       <x>190</x>
@@ -138,7 +138,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(85, 255, 0);</string>
+     <string notr="true">background-color: rgb(206, 255, 255);</string>
     </property>
     <property name="placeholderText">
      <string>VND</string>
@@ -162,7 +162,7 @@
      <string>Giá :</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="txtaddTen">
+   <widget class="QTextEdit" name="txtTen">
     <property name="geometry">
      <rect>
       <x>190</x>
@@ -172,7 +172,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(85, 255, 0);</string>
+     <string notr="true">background-color:rgb(206, 255, 255);</string>
     </property>
     <property name="placeholderText">
      <string>Nhập Tên Dịch Vụ</string>
@@ -217,7 +217,7 @@
      <string>Đơn vị tính:</string>
     </property>
    </widget>
-   <widget class="QTextEdit" name="txtaddGia_2">
+   <widget class="QTextEdit" name="txtDvt">
     <property name="geometry">
      <rect>
       <x>190</x>
@@ -227,7 +227,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(85, 255, 0);</string>
+     <string notr="true">background-color: rgb(206, 255, 255);</string>
     </property>
     <property name="placeholderText">
      <string>...</string>
