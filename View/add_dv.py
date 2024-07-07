@@ -139,7 +139,7 @@ class Ui_MainWindow(object):
                 host='localhost',
                 user='root',  # Thay bằng username của bạn
                 password='phuc123',  # Thay bằng password của bạn
-                database='test_db'  # Tên cơ sở dữ liệu đã tạo
+                database='qlks'  # Tên cơ sở dữ liệu đã tạo
             )
 
             if connection.is_connected():

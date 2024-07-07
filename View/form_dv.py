@@ -141,7 +141,7 @@ class Ui_MainWindow(object):
                 host='localhost',
                 user='root',
                 password='phuc123',
-                database='test_db'  # Tên cơ sở dữ liệu đã tạo
+                database='qlks'  # Tên cơ sở dữ liệu đã tạo
             )
 
             if connection.is_connected():
@@ -193,7 +193,7 @@ class Ui_MainWindow(object):
                 host='localhost',
                 user='root',
                 password='phuc123',
-                database='test_db'
+                database='qlks'
             )
             if connection.is_connected():
                 cursor = connection.cursor()
@@ -222,7 +222,7 @@ class Ui_MainWindow(object):
                 host='localhost',
                 user='root',
                 password='phuc123',
-                database='test_db'
+                database='qlks'
             )
             if connection.is_connected():
                 cursor = connection.cursor()
