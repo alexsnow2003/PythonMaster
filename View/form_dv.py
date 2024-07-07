@@ -111,6 +111,8 @@ class Ui_MainWindow(object):
         self.btThem.clicked.connect(self.open_add_form)
         self.btSua.clicked.connect(self.open_edit_form)
         self.btThoat.clicked.connect(self.close_application)
+        self.btXoa.clicked.connect(self.delete_record)
+        self.btTimKiem.clicked.connect(self.search_data)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -177,6 +179,73 @@ class Ui_MainWindow(object):
 
     def close_application(self):
         QtCore.QCoreApplication.instance().quit()
+
+    def delete_record(self):
+        selected_row = self.tableWidget.currentRow()
+        if selected_row < 0:
+            QtWidgets.QMessageBox.warning(self.centralwidget, "Warning", "Vui lòng chọn bản ghi để xóa !")
+            return
+
+        service_id = self.tableWidget.item(selected_row, 0).text()
+
+        try:
+            connection = mysql.connector.connect(
+                host='localhost',
+                user='root',
+                password='phuc123',
+                database='test_db'
+            )
+            if connection.is_connected():
+                cursor = connection.cursor()
+                query = "DELETE FROM DichVu WHERE MaDV = %s"
+                cursor.execute(query, (service_id,))
+                connection.commit()
+                QtWidgets.QMessageBox.information(self.centralwidget, "Success", "Đã xóa thành công bản ghi.")
+                self.load_data()
+
+        except Error as e:
+            QtWidgets.QMessageBox.critical(self.centralwidget, "Error", f"Không thể xóa bản ghi: {e}")
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+
+    def search_data(self):
+        search_text = self.txtTimKiem.toPlainText().strip()
+
+        if not search_text:
+            self.load_data()
+            return
+
+        try:
+            connection = mysql.connector.connect(
+                host='localhost',
+                user='root',
+                password='phuc123',
+                database='test_db'
+            )
+            if connection.is_connected():
+                cursor = connection.cursor()
+                query = """
+                    SELECT * FROM DichVu 
+                    WHERE `TenDV` LIKE %s OR `Dvt` LIKE %s OR `DonGia` LIKE %s OR `MoTa` LIKE %s
+                """
+                like_pattern = f"%{search_text}%"
+                cursor.execute(query, (like_pattern, like_pattern, like_pattern, like_pattern))
+                self.tableWidget.setRowCount(0)
+                rows = cursor.fetchall()
+
+                for row_number, row_data in enumerate(rows):
+                    self.tableWidget.insertRow(row_number)
+                    for column_number, data in enumerate(row_data):
+                        self.tableWidget.setItem(row_number, column_number, QtWidgets.QTableWidgetItem(str(data)))
+
+        except Error as e:
+            QtWidgets.QMessageBox.critical(self.centralwidget, "Error", f"Failed to search records: {e}")
+        finally:
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
 
 
 if __name__ == "__main__":
